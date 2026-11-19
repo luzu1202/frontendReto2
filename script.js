@@ -59,6 +59,12 @@ function notify(msg) {
   setTimeout(() => elements.toast.classList.remove('show'), 3500);
 }
 
+function getWriteAuthHeaders() {
+  const apiKey = window.prompt('Ingresa la API key para autorizar esta modificación:');
+  if (apiKey === null) return null;
+  return { Authorization: `Bearer ${apiKey}` };
+}
+
 // 1. COMPROBACIÓN DE SALUD DE LA API (GET /health)
 async function verifyApiHealth() {
   try {
@@ -227,13 +233,24 @@ window.changePage = (p) => {
 window.deleteProduct = async (id) => {
   if (!confirm(`¿Deseas probar la acción DELETE en el backend para el producto ID #${id}?`)) return;
 
+  const authHeaders = getWriteAuthHeaders();
+  if (!authHeaders) return;
+
   const endpointText = `DELETE /api/v1/productos/${id}`;
   elements.metricEndpoint.textContent = endpointText;
 
   const startTime = performance.now();
   try {
-    const res = await fetch(`${API_BASE_URL}/productos/${id}`, { method: 'DELETE' });
+    const res = await fetch(`${API_BASE_URL}/productos/${id}`, {
+      method: 'DELETE',
+      headers: authHeaders,
+    });
     const duration = Math.round(performance.now() - startTime);
+
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.error?.message || `Error HTTP ${res.status}`);
+    }
 
     elements.metricStatus.textContent = `${res.status} No Content`;
     elements.metricStatus.className = 'metric-value badge-status success';
@@ -242,7 +259,9 @@ window.deleteProduct = async (id) => {
     notify(`✅ Producto #${id} eliminado con éxito (HTTP 204 No Content).`);
     fetchProducts();
   } catch (err) {
-    notify(`❌ Error al eliminar producto #${id}`);
+    elements.metricStatus.textContent = 'ERROR';
+    elements.metricStatus.className = 'metric-value badge-status error';
+    notify(`❌ ${err.message}`);
   }
 };
 
@@ -261,20 +280,26 @@ elements.createProductForm.addEventListener('submit', async (e) => {
   const endpointText = `POST /api/v1/productos`;
   elements.metricEndpoint.textContent = endpointText;
 
+  const authHeaders = getWriteAuthHeaders();
+  if (!authHeaders) return;
+
   const startTime = performance.now();
 
   try {
     const res = await fetch(`${API_BASE_URL}/productos`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...authHeaders,
+      },
       body: JSON.stringify(newProduct),
     });
 
     const duration = Math.round(performance.now() - startTime);
     const data = await res.json();
 
-    elements.metricStatus.textContent = `${res.status} Created`;
-    elements.metricStatus.className = 'metric-value badge-status success';
+    elements.metricStatus.textContent = `${res.status} ${res.statusText}`;
+    elements.metricStatus.className = `metric-value badge-status ${res.ok ? 'success' : 'error'}`;
     elements.metricTime.textContent = `${duration} ms`;
 
     if (res.ok) {
