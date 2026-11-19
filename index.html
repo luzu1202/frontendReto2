@@ -5,7 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Evidencia API REST - Catálogo de Productos</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    integrity="sha384-XGjxtQfXaH2tnPFa9x+ruJTuLE3Aa6LhHSWRr1XeTyhezb4abCG4ccI5AkVDxqC+"
+    crossorigin="anonymous"
+  >
 </head>
 <body>
 
@@ -33,11 +38,11 @@
       <div class="monitor-header">
         <span class="monitor-title"><i class="bi bi-activity"></i> Consola de la Petición HTTP en Tiempo Real</span>
         <div class="view-toggles">
-          <button id="btnViewCards" class="toggle-btn active"><i class="bi bi-grid-fill"></i> Vista Gráfica</button>
-          <button id="btnViewJson" class="toggle-btn"><i class="bi bi-code-slash"></i> Ver JSON de la API</button>
+          <button type="button" id="btnViewCards" class="toggle-btn active"><i class="bi bi-grid-fill"></i> Vista Gráfica</button>
+          <button type="button" id="btnViewJson" class="toggle-btn"><i class="bi bi-code-slash"></i> Ver JSON de la API</button>
         </div>
       </div>
-      
+
       <div class="monitor-body">
         <div class="monitor-metric">
           <span class="metric-label">Método y Endpoint</span>
@@ -68,7 +73,7 @@
           placeholder="Buscar producto por nombre o descripción (Filtra en PostgreSQL)..." 
           aria-label="Buscar productos"
         >
-        <button id="clearSearchBtn" class="clear-btn" hidden><i class="bi bi-x-circle-fill"></i></button>
+        <button type="button" id="clearSearchBtn" class="clear-btn" hidden><i class="bi bi-x-circle-fill"></i></button>
       </div>
 
       <div class="action-group">
@@ -82,7 +87,7 @@
           </select>
         </div>
 
-        <button id="btnOpenCreate" class="btn-primary">
+        <button type="button" id="btnOpenCreate" class="btn-primary">
           <i class="bi bi-plus-circle-fill"></i> Probar POST (Nuevo)
         </button>
       </div>
@@ -92,7 +97,7 @@
     <section id="jsonViewSection" class="json-section" hidden>
       <div class="json-header">
         <span><i class="bi bi-braces"></i> Respuesta JSON exacta recibida desde <code>http://localhost:5050/api/v1/productos</code></span>
-        <button id="btnCopyJson" class="btn-copy"><i class="bi bi-clipboard"></i> Copiar JSON</button>
+        <button type="button" id="btnCopyJson" class="btn-copy"><i class="bi bi-clipboard"></i> Copiar JSON</button>
       </div>
       <pre><code id="jsonCodeOutput">Cargando datos de la API...</code></pre>
     </section>
@@ -116,11 +121,11 @@
     <div class="modal-box">
       <div class="modal-header">
         <h2><i class="bi bi-box-seam"></i> Crear Producto (Probar API POST)</h2>
-        <button class="close-modal-btn" onclick="document.getElementById('createModal').close()">&times;</button>
+        <button type="button" class="close-modal-btn" onclick="document.getElementById('createModal').close()">&times;</button>
       </div>
       <form id="createProductForm" class="modal-form">
         <p class="modal-desc">Al enviar este formulario se enviará un <code>POST /api/v1/productos</code> con payload JSON hacia el backend en el puerto 5050.</p>
-        
+
         <div class="form-group">
           <label for="newNombre">Nombre del Producto *</label>
           <input type="text" id="newNombre" placeholder="Ej: Taladro Percutor Milwaukee 20V" required minlength="3">
